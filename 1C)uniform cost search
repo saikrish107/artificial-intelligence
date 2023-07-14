@@ -1,53 +1,45 @@
-#uniform cost search
-from queue import PriorityQueue
-#gr={'a':{'b':3,'c':2},'b':{'d':6,'e':5,'a':3},'c':{'f':5,'a':2},'f':{'g':2,'c':5},'e':{'b':5},'g':{'f':2},'d':{'b':6}}
-gr={}
-n=int(input("number of nodes"))
-for i in range(n):
-  node=input("enter node")
-  q=int(input("enter number of connecting nodes"))
-  d={}
-  for i in range(q):
-    new=input("enter node")
-    val=int(input("enter value"))
-    d[new]=val
-  gr[node]=d
-print(gr)
-parent={'a':[]}
-close=[]
-path=[]
-def backtrack(now,cost):
-  if(cost<0):
-    return
-  if(cost==0):
-    path.append(now)
-    print(path)
-    return
-  close.append(now)
-  path.append(now)
-  for i in parent[now]:
-    if i not in close:
-      backtrack(i,cost-gr[now][i])
-  return
+g=eval(input('Enter graph: '))
+c=eval(input('Enter costs: '))
+s=input('Enter source: ')
+d=input('Enter destination: ')
 
-def bestfirst(gr,goal):
-    open_list=PriorityQueue()
-    closed_list=[]
-    open_list.put((0,'a'))
-    while open_list.empty()==False:
-        cost,now=open_list.get()
-        if now==goal:
-            print("min cost required is",cost)
-            backtrack(goal,cost);
-            break
-        closed_list.append(now)
-        for edge in gr[now].keys():
-            if edge not in closed_list:
-                open_list.put((cost+gr[now][edge],edge))
-                if edge not in parent.keys():
-                  parent[edge]=[now]
-                else:
-                  parent[edge].append(now)
-    #print(closed_list)
-bestfirst(gr,'g')
-#print(parent)
+q=s
+l=[]
+cost=0
+minc=[]
+
+def add():
+  k=0
+  if q not in g:
+    return
+  for i in g[q]:
+    l.append([cost+c[q][k],q,i])
+    if i==d:
+      minc.append(cost+c[q][k])
+    k+=1
+
+if q!=d:
+  add()
+
+while l:
+  j=min(l)
+  print(j)
+  q=j[2]
+  cost=j[0]
+  l.remove(j)
+
+  if q!=d:
+    add()
+
+print('Minimum cost =',min(minc))
+
+Enter graph: {'Sibiu':['Fagaras','Rimnicu Vilcea'], 'Fagaras':['Bucharest'], 'Rimnicu Vilcea':['Pitesti'], 'Pitesti':['Bucharest']}
+Enter costs: {'Sibiu':[99,80], 'Fagaras':[211], 'Rimnicu Vilcea':[97], 'Pitesti':[101]}
+Enter source: Sibiu
+Enter destination: Bucharest
+[80, 'Sibiu', 'Rimnicu Vilcea']
+[99, 'Sibiu', 'Fagaras']
+[177, 'Rimnicu Vilcea', 'Pitesti']
+[278, 'Pitesti', 'Bucharest']
+[310, 'Fagaras', 'Bucharest']
+Minimum cost = 278
